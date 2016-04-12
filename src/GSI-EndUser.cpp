@@ -73,6 +73,8 @@ namespace {
         int connect_return = connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
         myAssert(connect_return >= 0, "connect()");
 
+        cout << "Connection established with the server" << endl;
+
         doProcessing(sockfd);
 
         close(sockfd);

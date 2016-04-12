@@ -53,7 +53,7 @@ namespace {
         myAssert(read_count >= 0, "read()");
 
         /* And print it in the console */
-        printf("Server receive : %s\n", buffer);
+        printf("Server receive : %s", buffer);
 
         /* Send him an ACK */
         write_count = write(sock, "I got your message", 18);
@@ -68,11 +68,12 @@ namespace {
         int bind_return = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
         myAssert(bind_return >= 0, "bind()");
 
-        /* Start listening for the clients, here process will
+        /* Start listening for clients, here process will
          * go in sleep mode and will wait for the incoming connection
          */
         int listen_return = listen(sockfd, 5);
         myAssert(listen_return >= 0, "listen()");
+        cout << "Waiting for incoming connection..." << endl;
 
         int theConversation;
         struct sockaddr_in client_addr;
@@ -81,6 +82,7 @@ namespace {
             socklen_t size_s = sizeof(client_addr);
             theConversation = accept(sockfd, (sockaddr *) &client_addr, &size_s);
             myAssert(theConversation >= 0, "accept()");
+            cout << "A new client has connected" << endl;
             /* Create child process */
             switch (fork()) {
                 case -1:
