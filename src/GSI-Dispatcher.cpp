@@ -15,7 +15,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <strings.h>
-#include <cassert>
 #include <netdb.h>
 #include <cstring>
 
@@ -23,62 +22,68 @@ using namespace std;
 
 namespace {
 
+    void myAssert(bool condition, const char *message) {
+        if (condition) return;
+        perror(message);
+        exit(1);
+    }
+
+
+    int createTCPSocket(struct sockaddr_in &serv_addr,
+                         const char *addr = "localhost",
+                         uint16_t num_port = 5001) {
+        /* Server address and port number */
+        struct hostent *h = gethostbyname(addr);
+        myAssert(NULL != h, "gethostbyname()");
+
+        /* Create socket */
+        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        myAssert(sockfd >= 0, "socket()");
+
+        /* Initialize the server socket structure */
+        bzero((char *) &serv_addr, sizeof(serv_addr));
+        serv_addr.sin_family = AF_INET;
+        memcpy(&serv_addr.sin_addr, h->h_addr, 4);
+        serv_addr.sin_port = htons(num_port);
+        return sockfd;
+    }
+
     void doProcessing(int sock) {
         char buffer[256];
-
+        ssize_t read_count, write_count;
         /* Read the client message */
-        ssize_t read_count = read(sock, buffer, 255);
-        assert(read_count >= 0 && "read()");
+        read_count = read(sock, buffer, 255);
+        myAssert(read_count >= 0, "read()");
 
         /* And print it in the console */
         printf("Server receive : %s\n", buffer);
 
         /* Send him an ACK */
-        ssize_t write_count = write(sock,"I got your message",18);
-        assert(write_count >= 0 && "write()");
+        write_count = write(sock, "I got your message", 18);
+        myAssert(write_count >= 0, "write()");
     }
 
     void exec() {
-        /* Server address and port number */
-        struct hostent *h = gethostbyname("localhost");
-        assert(NULL != h && "gethostbyname()");
-        uint16_t num_port = 5001;
-
-        /* Create socket */
-        int theConnection = socket(AF_INET, SOCK_STREAM, 0);
-        assert(theConnection >= 0 && "socket()");
-
-        /* Initialize the server socket structure */
         struct sockaddr_in serv_addr;
-        bzero((char *) &serv_addr, sizeof(serv_addr));
-        serv_addr.sin_family = AF_INET;
-        memcpy(&serv_addr.sin_addr, h->h_addr, 4);
-        serv_addr.sin_port = htons(num_port);
-
+        /* Create the TCP socket localhost:5001 */
+        int sockfd = createTCPSocket(serv_addr);
         /* Bind the host address */
-        if (bind(theConnection, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-            perror("bind() failed");
-            exit(1);
-        }
+        int bind_return = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+        myAssert(bind_return >= 0, "bind()");
 
         /* Start listening for the clients, here process will
          * go in sleep mode and will wait for the incoming connection
          */
-        if (listen(theConnection, 5) < 0) {
-            perror("listen() failed");
-            exit(1);
-        }
+        int listen_return = listen(sockfd, 5);
+        myAssert(listen_return >= 0, "listen()");
 
         int theConversation;
         struct sockaddr_in client_addr;
         /* Handle multiple simultaneous connections */
         while (true) {
             socklen_t size_s = sizeof(client_addr);
-            theConversation = accept(theConnection, (sockaddr *) &client_addr, &size_s);
-            if (theConversation < 0) {
-                perror("accept() failed");
-                exit(1);
-            }
+            theConversation = accept(sockfd, (sockaddr *) &client_addr, &size_s);
+            myAssert(theConversation >= 0, "accept()");
             /* Create child process */
             switch (fork()) {
                 case -1:
@@ -86,7 +91,7 @@ namespace {
                     exit(1);
                 case 0:
                     /* This is the client process */
-                    close(theConnection);
+                    close(sockfd);
                     doProcessing(theConversation);
                     exit(0);
                 default:
