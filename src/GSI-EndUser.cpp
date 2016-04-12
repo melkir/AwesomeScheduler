@@ -74,6 +74,8 @@ namespace {
         myAssert(connect_return >= 0, "connect()");
 
         doProcessing(sockfd);
+
+        close(sockfd);
     }
 }
 
