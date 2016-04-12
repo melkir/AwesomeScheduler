@@ -1,14 +1,7 @@
 #include "Socket.h"
 #include "Util.h"
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <strings.h>
 #include <netdb.h>
 #include <cstring>
-#include <zconf.h>
-
-using namespace std;
 
 Socket::Socket(const char *hostname, const uint16_t port) {
     /* Create TCP socket */
