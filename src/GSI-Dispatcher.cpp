@@ -30,8 +30,8 @@ namespace {
 
 
     int createTCPSocket(struct sockaddr_in &serv_addr,
-                         const char *addr = "localhost",
-                         uint16_t num_port = 5001) {
+                        const char *addr = "localhost",
+                        uint16_t num_port = 5001) {
         /* Server address and port number */
         struct hostent *h = gethostbyname(addr);
         myAssert(NULL != h, "gethostbyname()");
