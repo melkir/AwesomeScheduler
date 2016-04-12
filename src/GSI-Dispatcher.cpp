@@ -28,10 +28,7 @@ namespace {
         exit(1);
     }
 
-
-    int createTCPSocket(struct sockaddr_in &serv_addr,
-                        const char *addr = "localhost",
-                        uint16_t num_port = 5001) {
+    int createTCPSocket(struct sockaddr_in &serv_addr, const char *addr = "localhost", uint16_t num_port = 5001) {
         /* Server address and port number */
         struct hostent *h = gethostbyname(addr);
         myAssert(NULL != h, "gethostbyname()");
@@ -63,7 +60,7 @@ namespace {
         myAssert(write_count >= 0, "write()");
     }
 
-    void exec() {
+    void startServer() {
         struct sockaddr_in serv_addr;
         /* Create the TCP socket localhost:5001 */
         int sockfd = createTCPSocket(serv_addr);
@@ -108,7 +105,7 @@ int main(int argc, char *argv[]) {
     << " Dispatcher as a Server: \n"
     << "-----------------------" << endl;
 
-    exec();
+    startServer();
 
     return 0;
 }
