@@ -56,7 +56,7 @@ namespace {
         printf("Server receive : %s", buffer);
 
         /* Send him an ACK */
-        write_count = write(sock, "I got your message", 18);
+        write_count = write(sock, "Server : I got your message", 27);
         myAssert(write_count >= 0, "write()");
     }
 
@@ -82,7 +82,7 @@ namespace {
             socklen_t size_s = sizeof(client_addr);
             theConversation = accept(sockfd, (sockaddr *) &client_addr, &size_s);
             myAssert(theConversation >= 0, "accept()");
-            cout << "A new client has connected" << endl;
+            cout << "A new client has joined the server" << endl;
             /* Create child process */
             switch (fork()) {
                 case -1:
@@ -92,6 +92,7 @@ namespace {
                     /* This is the client process */
                     close(sockfd);
                     doProcessing(theConversation);
+                    cout << "Client has quit the server" << endl;
                     exit(0);
                 default:
                     /* This is the parent process */
