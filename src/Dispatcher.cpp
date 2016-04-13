@@ -2,6 +2,7 @@
 #include "Dispatcher.h"
 #include <iostream>
 #include <zconf.h>
+#include <arpa/inet.h>
 
 using namespace std;
 
@@ -35,7 +36,8 @@ void Dispatcher::startServer() {
         socklen_t size_s = sizeof(clientAddr);
         theConversation = accept(sockfd, (sockaddr *) &clientAddr, &size_s);
         Util::myAssert(theConversation >= 0, "accept()");
-        cout << "A new client has joined the server" << endl;
+        cout << "A new client has joined the server : "
+             << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
         /* Create child process */
         switch (fork()) {
             case -1:
