@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void Dispatcher::startServer(const char *hostname, const uint16_t port) {
+void Dispatcher::startServer(const string &hostname, const uint16_t port) {
     Socket socket(hostname, port);
     const int &sockfd = socket.getFileDescriptor();
     const sockaddr_in &socketAddr = socket.getAddress();
@@ -49,27 +49,41 @@ void Dispatcher::startServer(const char *hostname, const uint16_t port) {
     } /* end of while */
 }
 
-void Dispatcher::doProcessing(int sock) {
-    char buffer[256];
-    ssize_t read_count, write_count;
-    /* Read the client message */
-    read_count = read(sock, buffer, 255);
-    myAssert(read_count >= 0, "read()");
-
-    /* And print it in the console */
-    printf("Server receive : %s", buffer);
-
-    /* Send him an ACK */
-    write_count = write(sock, "Server : I got your message", 27);
-    myAssert(write_count >= 0, "write()");
+void Dispatcher::doProcessing(const int sock) {
+//    char buffer[256];
+//    ssize_t read_count, write_count;
+//    /* Read the client message */
+//    read_count = read(sock, buffer, 255);
+//    myAssert(read_count >= 0, "read()");
+//
+//    /* And print it in the console */
+//    printf("Server receive : %s", buffer);
+//
+//    /* Send him an ACK */
+//    write_count = write(sock, "Server : I got your message", 27);
+//    myAssert(write_count >= 0, "write()");
+    recvFile(sock);
 }
+
+void Dispatcher::recvFile(const int sockfd) {
+    FILE *theIn = fdopen(sockfd, "r");
+    myAssert(NULL != theIn, "fdopen()");
+    char buffer[255];
+    fgets(buffer, sizeof(buffer), theIn);
+    while (!feof(theIn)) {
+        cout << "receive : " << buffer << endl;
+        fgets(buffer, sizeof(buffer), theIn);
+    }
+//    fclose(theIn);
+}
+
 
 int main() {
     Dispatcher dispatcher;
     cout << "-----------------------\n"
     << "Dispatcher as a Server\n"
     << "-----------------------" << endl;
-    dispatcher.startServer("localhost", 5001);
+    dispatcher.startServer("localhost", 5002);
 }
 
 

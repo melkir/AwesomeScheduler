@@ -7,7 +7,7 @@
 
 class Socket {
 public:
-    Socket(const char *hostname, uint16_t port);
+    Socket(const std::string &hostname, const uint16_t port);
 
     int getFileDescriptor() const { return sockfd; }
 

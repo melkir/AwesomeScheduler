@@ -6,9 +6,11 @@
 
 class EndUser {
 public:
-    void startClient(const char *hostname = "localhost", const uint16_t port = 5001);
+    void startClient(const string &hostname = "localhost", const uint16_t port = 5001);
 
-    void promptMenu();
+    void promptMenu(int sock);
+
+    void sendFile(int sock, const string &filepath);
 
 private:
     void doProcessing(int sock);

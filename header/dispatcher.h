@@ -6,7 +6,9 @@
 
 class Dispatcher {
 public:
-    void startServer(const char *hostname = "localhost", const uint16_t port = 5001);
+    void startServer(const std::string &hostname = "localhost", const uint16_t port = 5001);
+
+    void recvFile(int sockfd);
 
 private:
     void doProcessing(int sock);

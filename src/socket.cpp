@@ -3,13 +3,13 @@
 #include <netdb.h>
 #include <cstring>
 
-Socket::Socket(const char *hostname, const uint16_t port) {
+Socket::Socket(const std::string &hostname, const uint16_t port) {
     /* Create TCP socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     myAssert(sockfd >= 0, "socket()");
 
     /* Resolve hostname IP by name */
-    struct hostent *h = gethostbyname(hostname);
+    struct hostent *h = gethostbyname(hostname.c_str());
     myAssert(NULL != h, "gethostbyname()");
 
     /* Initialize the socket structure */
