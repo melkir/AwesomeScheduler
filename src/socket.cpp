@@ -1,5 +1,5 @@
-#include "Socket.h"
-#include "Util.h"
+#include "socket.h"
+#include "util.h"
 #include <netdb.h>
 #include <cstring>
 

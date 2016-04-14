@@ -2,7 +2,7 @@
 #define AWESOMESCHEDULER_DISPATCHER_H
 
 
-#include "Socket.h"
+#include "socket.h"
 
 class Dispatcher {
 public:

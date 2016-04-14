@@ -1,5 +1,5 @@
-#include "Util.h"
-#include "Dispatcher.h"
+#include "util.h"
+#include "dispatcher.h"
 #include <iostream>
 #include <zconf.h>
 #include <arpa/inet.h>

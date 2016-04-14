@@ -1,11 +1,11 @@
 #include <sys/socket.h>
-#include <Util.h>
+#include <util.h>
 #include <zconf.h>
 #include <iostream>
 #include <netinet/in.h>
 #include <strings.h>
 #include <cstring>
-#include "EndUser.h"
+#include "end_user.h"
 
 using namespace std;
 
