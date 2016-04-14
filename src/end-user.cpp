@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 #include <strings.h>
 #include <cstring>
-#include "end_user.h"
+#include "end-user.h"
 
 using namespace std;
 
