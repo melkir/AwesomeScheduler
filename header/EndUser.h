@@ -6,14 +6,10 @@
 
 class EndUser {
 public:
-    EndUser(const char *hostname = "localhost", const uint16_t port = 5001);
-
-    void startClient();
+    void startClient(const char *hostname = "localhost", const uint16_t port = 5001);
 
 private:
     void doProcessing(int sock);
-
-    Socket socket;
 };
 
 

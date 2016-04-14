@@ -6,14 +6,9 @@
 
 class Dispatcher {
 public:
-    Dispatcher(const char *hostname = "localhost", const uint16_t port = 5001);
-
-    void startServer();
-
+    void startServer(const char *hostname = "localhost", const uint16_t port = 5001);
 private:
     void doProcessing(int sock);
-
-    Socket socket;
 };
 
 

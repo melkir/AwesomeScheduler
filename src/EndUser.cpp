@@ -9,23 +9,16 @@
 
 using namespace std;
 
-EndUser::EndUser(const char *hostname, const uint16_t port) : socket(hostname, port) {
-    cout << "--------------------\n"
-    << "End-User as a Client\n"
-    << "\t" << hostname << ":" << port << "\n"
-    << "--------------------" << endl;
-    startClient();
-}
-
-void EndUser::startClient() {
-    const int &sockfd(socket.getSockFD());
-    const sockaddr_in &socketAddr(socket.getSocketAddr());
+void EndUser::startClient(const char *hostname, const uint16_t port) {
+    Socket socket(hostname, port);
+    const int &sockfd = socket.getFileDescriptor();
+    const sockaddr_in &socketAddr = socket.getAddress();
 
     /* Connect to the server */
     int connect_return = connect(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
     Util::myAssert(connect_return >= 0, "connect()");
 
-    cout << "Connection established with the server" << endl;
+    cout << "Connection established with the server : " << socket << endl;
 
     doProcessing(sockfd);
     close(sockfd);
@@ -52,7 +45,11 @@ void EndUser::doProcessing(int sock) {
 }
 
 int main() {
-    EndUser();
+    EndUser endUser;
+    cout << "--------------------\n"
+    << "End-User as a Client\n"
+    << "--------------------" << endl;
+    endUser.startClient("localhost", 5001);
 }
 
 

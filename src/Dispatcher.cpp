@@ -6,17 +6,10 @@
 
 using namespace std;
 
-Dispatcher::Dispatcher(const char *hostname, const uint16_t port) : socket(hostname, port) {
-    cout << "-----------------------\n"
-    << "Dispatcher as a Server\n"
-    << "\t" << hostname << ":" << port << "\n"
-    << "-----------------------" << endl;
-    startServer();
-}
-
-void Dispatcher::startServer() {
-    const int &sockfd(socket.getSockFD());
-    const sockaddr_in &socketAddr(socket.getSocketAddr());
+void Dispatcher::startServer(const char *hostname, const uint16_t port) {
+    Socket socket(hostname, port);
+    const int &sockfd = socket.getFileDescriptor();
+    const sockaddr_in &socketAddr = socket.getAddress();
 
     /* Bind the host address */
     int bind_return = bind(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
@@ -27,7 +20,7 @@ void Dispatcher::startServer() {
      */
     int listen_return = listen(sockfd, 5);
     Util::myAssert(listen_return >= 0, "listen()");
-    cout << "Waiting for incoming connection..." << endl;
+    cout << socket << "\n" << "Waiting for incoming connection..." << endl;
 
     int theConversation;
     struct sockaddr_in clientAddr;
@@ -37,7 +30,7 @@ void Dispatcher::startServer() {
         theConversation = accept(sockfd, (sockaddr *) &clientAddr, &size_s);
         Util::myAssert(theConversation >= 0, "accept()");
         cout << "A new client has joined the server : "
-             << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
+        << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
         /* Create child process */
         switch (fork()) {
             case -1:
@@ -72,7 +65,11 @@ void Dispatcher::doProcessing(int sock) {
 }
 
 int main() {
-    Dispatcher();
+    Dispatcher dispatcher;
+    cout << "-----------------------\n"
+    << "Dispatcher as a Server\n"
+    << "-----------------------" << endl;
+    dispatcher.startServer("localhost", 5001);
 }
 
 
