@@ -6,9 +6,27 @@
 namespace pt = boost::property_tree;
 
 TaskProperties::TaskProperties(const string &m_proc, int m_profile, const string &m_in, const string &m_out, int m_disk,
-                               int m_power, int m_cputime) : m_proc(m_proc), m_profile(m_profile), m_in(m_in),
-                                                             m_out(m_out),
-                                                             m_disk(m_disk), m_power(m_power), m_cputime(m_cputime) { }
+                               int m_power, int m_cputime) :
+        m_proc(m_proc), m_profile(m_profile), m_in(m_in), m_out(m_out), m_disk(m_disk), m_power(m_power),
+        m_cputime(m_cputime) { }
+
+void TaskProperties::load() {
+    cout << "proc=";
+    cin >> m_proc;
+    cout << "profile=";
+    cin >> m_profile;
+    cout << "in=";
+    cin >> m_in;
+    cout << "out=";
+    cin >> m_out;
+    cout << "disk=";
+    cin >> m_disk;
+    cout << "power=";
+    cin >> m_power;
+    cout << "cputime=";
+    cin >> m_cputime;
+    cout << "Task successfully created";
+}
 
 void TaskProperties::load(const string &filename) {
     // Create empty property tree object
@@ -55,7 +73,7 @@ std::ostream &operator<<(std::ostream &os, const TaskProperties &t) {
            << "cputime\t= " << t.m_cputime;
 }
 
-
+/*
 int main() {
     try {
         TaskProperties t_prop;
@@ -73,6 +91,7 @@ int main() {
     }
     return 0;
 }
+*/
 
 
 

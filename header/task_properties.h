@@ -23,6 +23,8 @@ public:
     TaskProperties(const string &m_proc, int m_profile, const string &m_in, const string &m_out, int m_disk,
                    int m_power, int m_cputime);
 
+    void load();
+
     void load(const string &filename);
 
     void save(const string &filename);

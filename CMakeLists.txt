@@ -29,8 +29,8 @@ set(TASKPROPERTIES_SOURCE_FILES
 
 add_executable(Dispatcher ${DISPTACHER_SOURCE_FILES})
 
-add_executable(EndUser ${ENDUSER_SOURCE_FILES})
+add_executable(EndUser ${ENDUSER_SOURCE_FILES} ${TASKPROPERTIES_SOURCE_FILES})
+target_link_libraries(EndUser ${Boost_LIBRARIES})
 
 add_executable(TaskProperties ${TASKPROPERTIES_SOURCE_FILES})
-
 target_link_libraries(TaskProperties ${Boost_LIBRARIES})

@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <strings.h>
 #include <cstring>
+#include <task_properties.h>
 #include "end-user.h"
 
 using namespace std;
@@ -44,12 +45,49 @@ void EndUser::doProcessing(int sock) {
     printf("%s\n", buffer);
 }
 
+void EndUser::promptMenu() {
+    int option;
+    string path;
+    TaskProperties t;
+    do {
+        //Displaying Options for the menu
+        cout << "1) Load a task from XML\n"
+        << "2) Create a task\n"
+        << "3) Exit" << endl;
+        //Prompting user to enter an option according to the menu
+        cout << "Please select an option : ";
+        cin >> option;  // taking option value as input and saving in variable "option"
+        switch (option) {
+            case 1 :
+                cout << "Enter the path to the xml file :";
+                cin >> path;
+                t.load(path);
+                break;
+            case 2:
+                cout << "Create the properties file :" << endl;
+                t.load();
+                cout << "Save the XML in which directory ? ";
+                cin >> path;
+                t.save(path);
+                break;
+            case 3:
+                cout << "Closing connection with the server..." << endl;
+                break;
+            default:
+                cout << "Invalid option entered" << endl;
+        }
+        cout << string(2, '\n');
+    } while (option != 3);  //condition of do-while loop
+}
+
+
 int main() {
     EndUser endUser;
     cout << "--------------------\n"
     << "End-User as a Client\n"
     << "--------------------" << endl;
-    endUser.startClient("localhost", 5001);
+    endUser.promptMenu();
+//    endUser.startClient("localhost", 5001);
 }
 
 

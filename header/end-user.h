@@ -8,6 +8,8 @@ class EndUser {
 public:
     void startClient(const char *hostname = "localhost", const uint16_t port = 5001);
 
+    void promptMenu();
+
 private:
     void doProcessing(int sock);
 };
