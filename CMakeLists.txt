@@ -5,6 +5,11 @@ include_directories(header)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+find_package(Boost)
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif ()
+
 set(DISPTACHER_SOURCE_FILES
         src/dispatcher.cpp
         src/socket.cpp
@@ -19,6 +24,14 @@ set(ENDUSER_SOURCE_FILES
         header/socket.h
         header/util.h)
 
+set(TASKPROPERTIES_SOURCE_FILES
+        src/task_properties.cpp
+        header/task_properties.h)
+
 add_executable(Dispatcher ${DISPTACHER_SOURCE_FILES})
 
 add_executable(EndUser ${ENDUSER_SOURCE_FILES})
+
+add_executable(TaskProperties ${TASKPROPERTIES_SOURCE_FILES})
+
+target_link_libraries(TaskProperties ${Boost_LIBRARIES})

@@ -1,0 +1,9 @@
+<task>
+    <proc>todo</proc>       <!-- procedure name -->
+    <profile>1</profile>    <!-- 1 = maths, 2 = disk, 3 = transactional -->
+    <in>filein</in>         <!-- data coming from end-user -->
+    <out>fileout</out>      <!-- data sent back to end-user -->
+    <disk>100</disk>        <!-- disk space -->
+    <power>10</power>       <!-- speed/power -->
+    <cputime>60</cputime>   <!-- total cpu used -->
+</task>
