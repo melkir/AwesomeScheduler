@@ -1,7 +1,7 @@
 # AwesomeScheduler
 
 AwesomeScheduler is a high-level scheduler powered by C++11 and Boost.  
-  
+---  
 **Starting : end-user sends a request to dispacher**  
  - dispatcher.cpp : Dispacher receiving work requests  
  - end-user.cpp : End-user sending work requests  
@@ -19,7 +19,8 @@ AwesomeScheduler is a high-level scheduler powered by C++11 and Boost.
  - task_properties.cpp : XML parser for work requests  
  - task[x].xml : Work unit properties for a task "x"  
   
-For more informations see "GSI-README" file from Bernard Glonneau
+For more informations see "GSI-README" file from Bernard Glonneau  
+---  
 
 ### Version
 0.0.1
@@ -65,7 +66,7 @@ MIT
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen.)
 
    [C++]: <http://www.cplusplus.com/>
-   [Boost]: <http://daringfireball.net>
-   [OpenMP]: <http://twitter.com/thomasfuchs>
-   [MPI]: <http://daringfireball.net/projects/markdown/>
+   [Boost]: <http://www.boost.org/>
+   [OpenMP]: <http://openmp.org/wp/>
+   [MPI]: <https://www.mpich.org/>
 
