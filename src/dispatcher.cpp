@@ -13,13 +13,13 @@ void Dispatcher::startServer(const char *hostname, const uint16_t port) {
 
     /* Bind the host address */
     int bind_return = bind(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
-    Util::myAssert(bind_return >= 0, "bind()");
+    myAssert(bind_return >= 0, "bind()");
 
     /* Start listening for clients, here process will
      * go in sleep mode and will wait for the incoming connection
      */
     int listen_return = listen(sockfd, 5);
-    Util::myAssert(listen_return >= 0, "listen()");
+    myAssert(listen_return >= 0, "listen()");
     cout << socket << "\n" << "Waiting for incoming connection..." << endl;
 
     int theConversation;
@@ -28,7 +28,7 @@ void Dispatcher::startServer(const char *hostname, const uint16_t port) {
     while (true) {
         socklen_t size_s = sizeof(clientAddr);
         theConversation = accept(sockfd, (sockaddr *) &clientAddr, &size_s);
-        Util::myAssert(theConversation >= 0, "accept()");
+        myAssert(theConversation >= 0, "accept()");
         cout << "A new client has joined the server : "
         << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
         /* Create child process */
@@ -54,14 +54,14 @@ void Dispatcher::doProcessing(int sock) {
     ssize_t read_count, write_count;
     /* Read the client message */
     read_count = read(sock, buffer, 255);
-    Util::myAssert(read_count >= 0, "read()");
+    myAssert(read_count >= 0, "read()");
 
     /* And print it in the console */
     printf("Server receive : %s", buffer);
 
     /* Send him an ACK */
     write_count = write(sock, "Server : I got your message", 27);
-    Util::myAssert(write_count >= 0, "write()");
+    myAssert(write_count >= 0, "write()");
 }
 
 int main() {

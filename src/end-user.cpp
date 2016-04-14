@@ -16,7 +16,7 @@ void EndUser::startClient(const char *hostname, const uint16_t port) {
 
     /* Connect to the server */
     int connect_return = connect(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
-    Util::myAssert(connect_return >= 0, "connect()");
+    myAssert(connect_return >= 0, "connect()");
 
     cout << "Connection established with the server : " << socket << endl;
 
@@ -33,12 +33,12 @@ void EndUser::doProcessing(int sock) {
 
     /* Send the message to the server */
     ssize_t write_count = write(sock, buffer, strlen(buffer));
-    Util::myAssert(write_count >= 0, "write()");
+    myAssert(write_count >= 0, "write()");
 
     /* Read the server response */
     bzero(buffer, 256);
     ssize_t read_count = read(sock, buffer, 255);
-    Util::myAssert(read_count >= 0, "read()");
+    myAssert(read_count >= 0, "read()");
 
     /* And print it in the console */
     printf("%s\n", buffer);

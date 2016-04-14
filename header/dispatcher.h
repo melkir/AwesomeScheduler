@@ -7,6 +7,7 @@
 class Dispatcher {
 public:
     void startServer(const char *hostname = "localhost", const uint16_t port = 5001);
+
 private:
     void doProcessing(int sock);
 };

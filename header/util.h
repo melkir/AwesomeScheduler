@@ -4,13 +4,10 @@
 #include <cstdio>
 #include <cstdlib>
 
-class Util {
-public:
-    static void myAssert(bool condition, const char *message) {
-        if (condition) return;
-        perror(message);
-        exit(1);
-    }
-};
+static void myAssert(bool condition, const char *message) {
+    if (condition) return;
+    perror(message);
+    exit(1);
+}
 
 #endif //AWESOMESCHEDULER_UTIL_H
