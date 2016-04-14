@@ -55,7 +55,7 @@ Second Tab:
 $ ./EndUser
 ```
 
-### Todos
+### Todo
  - Frond-end processing in dispatcher
  - Software running in each worker (multi-process monitoring)
  - Software running in each worker (multi-thread monitoring)
@@ -72,4 +72,3 @@ MIT
    [Boost]: <http://www.boost.org/>
    [OpenMP]: <http://openmp.org/wp/>
    [MPI]: <https://www.mpich.org/>
-
