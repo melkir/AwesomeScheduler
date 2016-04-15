@@ -3,6 +3,7 @@
 #include <iostream>
 #include <zconf.h>
 #include <arpa/inet.h>
+#include <cstring>
 
 using namespace std;
 
@@ -11,15 +12,13 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
     const int &sockfd = socket.getFileDescriptor();
     const sockaddr_in &socketAddr = socket.getAddress();
 
-    /* Bind the host address */
-    int bind_return = bind(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
-    myAssert(bind_return >= 0, "bind()");
+    /* Bind socket to the port */
+    int rc = bind(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
+    myAssert(rc >= 0, "bind()");
 
-    /* Start listening for clients, here process will
-     * go in sleep mode and will wait for the incoming connection
-     */
-    int listen_return = listen(sockfd, 5);
-    myAssert(listen_return >= 0, "listen()");
+    /* Start listening for clients on the socket */
+    rc = listen(sockfd, 5);
+    myAssert(rc >= 0, "listen()");
     cout << socket << "\n" << "Waiting for incoming connection..." << endl;
 
     int theConversation;
@@ -27,6 +26,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
     /* Handle multiple simultaneous connections */
     while (true) {
         socklen_t size_s = sizeof(clientAddr);
+        /* Wait for a client to connect */
         theConversation = accept(sockfd, (sockaddr *) &clientAddr, &size_s);
         myAssert(theConversation >= 0, "accept()");
         cout << "A new client has joined the server : "
@@ -50,31 +50,31 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
 }
 
 void Dispatcher::doProcessing(const int sock) {
-//    char buffer[256];
-//    ssize_t read_count, write_count;
-//    /* Read the client message */
-//    read_count = read(sock, buffer, 255);
-//    myAssert(read_count >= 0, "read()");
-//
-//    /* And print it in the console */
-//    printf("Server receive : %s", buffer);
-//
-//    /* Send him an ACK */
-//    write_count = write(sock, "Server : I got your message", 27);
-//    myAssert(write_count >= 0, "write()");
-    recvFile(sock);
+    char buffer[256];
+    ssize_t read_count, write_count;
+    /* Read the client message */
+    read_count = read(sock, buffer, 255);
+    myAssert(read_count >= 0, "read()");
+
+    /* And print it in the console */
+    printf("Server receive : %s", buffer);
+
+    /* Send him an ACK */
+    write_count = write(sock, "Server : I got your message", 27);
+    myAssert(write_count >= 0, "write()");
+    receiveFile(sock);
 }
 
-void Dispatcher::recvFile(const int sockfd) {
+void Dispatcher::receiveFile(const int sockfd) {
     FILE *theIn = fdopen(sockfd, "r");
     myAssert(NULL != theIn, "fdopen()");
-    char buffer[255];
-    fgets(buffer, sizeof(buffer), theIn);
+    char buffer[256];
+
     while (!feof(theIn)) {
-        cout << "receive : " << buffer << endl;
         fgets(buffer, sizeof(buffer), theIn);
+        printf("Server receive : %s", buffer);
     }
-//    fclose(theIn);
+    fclose(theIn);
 }
 
 
@@ -84,6 +84,8 @@ int main() {
     << "Dispatcher as a Server\n"
     << "-----------------------" << endl;
     dispatcher.startServer("localhost", 5002);
+
+    return 0;
 }
 
 

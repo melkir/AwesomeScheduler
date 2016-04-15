@@ -12,7 +12,7 @@ Socket::Socket(const std::string &hostname, const uint16_t port) {
     struct hostent *h = gethostbyname(hostname.c_str());
     myAssert(NULL != h, "gethostbyname()");
 
-    /* Initialize the socket structure */
+    /* Fill in socket structure */
     bzero((char *) &socketAddr, sizeof(socketAddr));
     socketAddr.sin_family = AF_INET;
     memcpy(&socketAddr.sin_addr, h->h_addr, 4);
