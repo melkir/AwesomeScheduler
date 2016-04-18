@@ -8,7 +8,7 @@
 #include <cstring>
 #include <task_properties.h>
 #include <fcntl.h>
-#include <tkPort.h>
+#include <sys/stat.h>
 #include "end-user.h"
 
 using namespace std;
