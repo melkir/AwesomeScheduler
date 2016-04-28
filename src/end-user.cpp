@@ -2,7 +2,6 @@
 #include <util.h>
 #include <zconf.h>
 #include <iostream>
-#include <netinet/in.h>
 #include <sys/sendfile.h>
 #include <strings.h>
 #include <cstring>
@@ -15,17 +14,11 @@ using namespace std;
 
 void EndUser::startClient(const string &hostname, const uint16_t port) {
     Socket socket(hostname, port);
-    const int &sockfd = socket.getFileDescriptor();
-    const sockaddr_in &socketAddr = socket.getAddress();
-
     /* Connect to the server */
-    int rc = connect(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
-    myAssert(rc >= 0, "connect()");
-
+    socket._connect();
     cout << "Connection established with the server : " << socket << endl;
-
-    doProcessing(sockfd);
-    close(sockfd);
+    /* Start processing on this socket */
+    doProcessing(socket.getFileDescriptor());
 }
 
 void EndUser::doProcessing(int sock) {

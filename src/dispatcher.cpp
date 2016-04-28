@@ -9,26 +9,18 @@ using namespace std;
 
 void Dispatcher::startServer(const string &hostname, const uint16_t port) {
     Socket socket(hostname, port);
-    const int &sockfd = socket.getFileDescriptor();
-    const sockaddr_in &socketAddr = socket.getAddress();
-
     /* Bind socket to the port */
-    int rc = bind(sockfd, (struct sockaddr *) &socketAddr, sizeof(socketAddr));
-    myAssert(rc >= 0, "bind()");
-
+    socket._bind();
     /* Start listening for clients on the socket */
-    rc = listen(sockfd, 5);
-    myAssert(rc >= 0, "listen()");
+    socket._listen(5);
     cout << socket << "\n" << "Waiting for incoming connection..." << endl;
 
     int theConversation;
     struct sockaddr_in clientAddr;
     /* Handle multiple simultaneous connections */
     while (true) {
-        socklen_t size_s = sizeof(clientAddr);
         /* Wait for a client to connect */
-        theConversation = accept(sockfd, (sockaddr *) &clientAddr, &size_s);
-        myAssert(theConversation >= 0, "accept()");
+        theConversation = socket._accept(clientAddr);
         cout << "A new client has joined the server : "
         << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
         /* Create child process */
@@ -38,7 +30,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
                 exit(1);
             case 0:
                 /* This is the client process */
-                close(sockfd);
+                close(socket.getFileDescriptor());
                 doProcessing(theConversation);
                 cout << "Client has quit the server" << endl;
                 exit(0);
