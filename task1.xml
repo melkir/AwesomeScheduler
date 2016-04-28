@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <task>
     <proc>todo</proc>       <!-- procedure name -->
     <profile>1</profile>    <!-- 1 = maths, 2 = disk, 3 = transactional -->

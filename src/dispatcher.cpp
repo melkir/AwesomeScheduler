@@ -38,31 +38,29 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
 }
 
 void Dispatcher::doProcessing(const int sock) {
-    char buffer[256];
-    ssize_t read_count, write_count;
-    /* Read the client message */
-    read_count = read(sock, buffer, 255);
-    myAssert(read_count >= 0, "read()");
-
-    /* And print it in the console */
-    printf("Server receive : %s", buffer);
-
-    /* Send him an ACK */
-    write_count = write(sock, "Server : I got your message", 27);
-    myAssert(write_count >= 0, "write()");
+//    char buffer[256];
+//    ssize_t read_count, write_count;
+//    /* Read the client message */
+//    read_count = read(sock, buffer, 255);
+//    myAssert(read_count >= 0, "read()");
+//
+//    /* And print it in the console */
+//    printf("Server receive : %s\n", buffer);
+//
+//    /* Send him an ACK */
+//    write_count = write(sock, "Server : I got your message", 27);
+//    myAssert(write_count >= 0, "write()");
     receiveFile(sock);
 }
 
 void Dispatcher::receiveFile(const int sockfd) {
     FILE *theIn = fdopen(sockfd, "r");
     myAssert(NULL != theIn, "fdopen()");
-    char buffer[256];
-
-    while (!feof(theIn)) {
-        fgets(buffer, sizeof(buffer), theIn);
-        printf("Server receive : %s", buffer);
-    }
-    fclose(theIn);
+    char buffer[1024];
+    ssize_t size = read(sockfd, &buffer, 1024);
+    myAssert(size >= 0, "read()");
+    buffer[size] = '\0';
+    cout << std::string(buffer) << std::endl;
 }
 
 
