@@ -13,7 +13,6 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
 
     int theConversation;
     struct sockaddr_in clientAddr;
-    int status = 0;
     /* Handle multiple simultaneous connections */
     while (true) {
         /* Wait for a client to connect */
@@ -30,7 +29,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
                 close(socket.getFileDescriptor());
                 doProcessing(theConversation);
                 cout << "Client has quit the server" << endl;
-                break;
+                exit(0);
             default:
                 /* This is the parent process */
                 close(theConversation);
@@ -51,12 +50,9 @@ void Dispatcher::doProcessing(const int sock) {
 //    /* Send him an ACK */
 //    write_count = write(sock, "Server : I got your message", 27);
 //    myAssert(write_count >= 0, "write()");
-    ssize_t rc;
-    do {
-        rc = receiveFile(sock);
-        cout << "rc : " << rc << endl;
-    } while (rc != 0);
-    cout << "end of receive files" << endl;
+
+    /* Receive new tasks files until the socket close */
+    while (receiveFile(sock) != 0);
 }
 
 ssize_t Dispatcher::receiveFile(const int sock) {
