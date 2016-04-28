@@ -13,6 +13,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
 
     int theConversation;
     struct sockaddr_in clientAddr;
+    int status = 0;
     /* Handle multiple simultaneous connections */
     while (true) {
         /* Wait for a client to connect */
@@ -29,7 +30,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
                 close(socket.getFileDescriptor());
                 doProcessing(theConversation);
                 cout << "Client has quit the server" << endl;
-                exit(0);
+                break;
             default:
                 /* This is the parent process */
                 close(theConversation);
@@ -50,17 +51,21 @@ void Dispatcher::doProcessing(const int sock) {
 //    /* Send him an ACK */
 //    write_count = write(sock, "Server : I got your message", 27);
 //    myAssert(write_count >= 0, "write()");
-    receiveFile(sock);
+    ssize_t rc;
+    do {
+        rc = receiveFile(sock);
+        cout << "rc : " << rc << endl;
+    } while (rc != 0);
+    cout << "end of receive files" << endl;
 }
 
-void Dispatcher::receiveFile(const int sockfd) {
-    FILE *theIn = fdopen(sockfd, "r");
-    myAssert(NULL != theIn, "fdopen()");
-    char buffer[1024];
-    ssize_t size = read(sockfd, &buffer, 1024);
+ssize_t Dispatcher::receiveFile(const int sock) {
+    char buffer[MAX_SIZE];
+    ssize_t size = read(sock, &buffer, MAX_SIZE);
     myAssert(size >= 0, "read()");
     buffer[size] = '\0';
-    cout << std::string(buffer) << std::endl;
+    cout << buffer << endl;
+    return size;
 }
 
 

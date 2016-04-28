@@ -8,7 +8,7 @@ class Dispatcher {
 public:
     void startServer(const std::string &hostname = "localhost", const uint16_t port = 5001);
 
-    void receiveFile(int sockfd);
+    ssize_t receiveFile(int sockfd);
 
 private:
     void doProcessing(int sock);

@@ -6,6 +6,8 @@
 #include <task_properties.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <strings.h>
+#include <cstring>
 #include "end-user.h"
 
 using namespace std;
@@ -37,7 +39,7 @@ void EndUser::doProcessing(int sock) {
 //
 //    /* And print it in the console */
 //    printf("%s\n", buffer);
-//
+
     int option;
     string path;
     TaskProperties t;
@@ -66,12 +68,11 @@ void EndUser::doProcessing(int sock) {
                 break;
             case 3:
                 cout << "Closing connection with the server..." << endl;
-                close(sock);
                 break;
             default:
                 cout << "Invalid option entered" << endl;
         }
-        cout << string(2, '\n');
+        cout << endl;
     } while (option != 3);  //condition of do-while loop
 }
 

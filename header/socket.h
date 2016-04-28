@@ -6,6 +6,8 @@
 #include <arpa/inet.h>
 #include <zconf.h>
 
+#define MAX_SIZE 1024
+
 class Socket {
 public:
     Socket(const std::string &hostname, const uint16_t port);
@@ -27,6 +29,7 @@ public:
     }
 
     ~Socket() {
+        std::cerr << "DESCTRUCTOR : SOCKET ^^^^" << std::endl;
         close(sockfd);
     };
 
