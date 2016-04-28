@@ -17,6 +17,11 @@ Socket::Socket(const std::string &hostname, const uint16_t port) {
     socketAddr.sin_family = AF_INET;
     memcpy(&socketAddr.sin_addr, h->h_addr, 4);
     socketAddr.sin_port = htons(port);
+
+    /* Enable the socket to reuse the address */
+    const int enable = 1;
+    rc = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+    myAssert(rc >= 0, "sockfd()");
 }
 
 void Socket::_connect() {
