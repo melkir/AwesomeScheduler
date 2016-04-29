@@ -6,8 +6,7 @@
 #include <task_properties.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <strings.h>
-#include <cstring>
+#include <boost/filesystem.hpp>
 #include "end-user.h"
 
 using namespace std;
@@ -41,8 +40,8 @@ void EndUser::doProcessing(int sock) {
 //    printf("%s\n", buffer);
 
     int option;
-    string path;
     TaskProperties t;
+    string path;
     do {
         //Displaying Options for the menu
         cout << "1) Load a task from XML\n"
@@ -61,10 +60,11 @@ void EndUser::doProcessing(int sock) {
             case 2:
                 cout << "Create the properties file :" << endl;
                 t.load();
-                cout << "Save the XML in which directory ? ";
-                cin >> path;
+                path = tmpnam(nullptr);
                 t.save(path);
                 sendFile(sock, path);
+                /* delete the tmp file after send */
+                unlink(path.c_str());
                 break;
             case 3:
                 cout << "Closing connection with the server..." << endl;
@@ -81,6 +81,7 @@ void EndUser::sendFile(const int sockfd, const string &filepath) {
     struct stat stat_buf;       /* argument to fstat */
     off_t offset = 0;           /* file offset */
     /* open the file in read-only mode */
+    cout << filepath.c_str() << endl;
     fd = open(filepath.c_str(), O_RDONLY);
     myAssert(-1 != fd, "open()");
     /* get the size of the file to be sent */
