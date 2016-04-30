@@ -2,6 +2,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 
 namespace pt = boost::property_tree;
 
@@ -10,7 +12,7 @@ TaskProperties::TaskProperties(const string &m_proc, int m_profile, const string
         m_proc(m_proc), m_profile(m_profile), m_in(m_in), m_out(m_out), m_disk(m_disk), m_power(m_power),
         m_cputime(m_cputime) { }
 
-void TaskProperties::load() {
+void TaskProperties::init() {
     cout << "proc=";
     cin >> m_proc;
     cout << "profile=";
@@ -44,7 +46,7 @@ void TaskProperties::load(const string &filename) {
     m_cputime = tree.get<int>("task.cputime");
 }
 
-void TaskProperties::save(const string &filename) {
+string TaskProperties::save() {
     // Create an empty property tree object.
     pt::ptree tree;
 
@@ -59,8 +61,13 @@ void TaskProperties::save(const string &filename) {
     tree.put("task.power", m_power);
     tree.put("task.cputime", m_cputime);
 
-    // Write property tree to XML file
-    pt::write_xml(filename, tree);
+    boost::filesystem::path temp = boost::filesystem::unique_path();
+    const std::string tempstr = temp.native();
+
+    // Write property tree to XML file with indent
+    pt::write_xml(tempstr, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
+
+    return tempstr;
 }
 
 std::ostream &operator<<(std::ostream &os, const TaskProperties &t) {
