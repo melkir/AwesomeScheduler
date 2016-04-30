@@ -29,7 +29,7 @@ public:
     }
 
     ~Socket() {
-        std::cerr << "DESCTRUCTOR : SOCKET ^^^^" << std::endl;
+        std::cerr << "~Socket() called" << std::endl;
         close(sockfd);
     };
 
