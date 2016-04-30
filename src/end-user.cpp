@@ -1,4 +1,3 @@
-#include <sys/socket.h>
 #include <util.h>
 #include <zconf.h>
 #include <iostream>
