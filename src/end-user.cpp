@@ -38,7 +38,7 @@ void EndUser::doProcessing(int sock) {
 //    printf("%s\n", buffer);
 
     int option;
-    TaskProperties t;
+    TaskProperties tp;
     string path;
     do {
         //Displaying Options for the menu
@@ -52,13 +52,13 @@ void EndUser::doProcessing(int sock) {
             case 1 :
                 cout << "Enter the path to the xml file :";
                 cin >> path;
-                t.load(path);
+                tp.load(path);
                 sendFile(sock, path);
                 break;
             case 2:
                 cout << "Create the properties file :" << endl;
-                t.init();
-                path = t.save();
+                tp.init();
+                path = tp.save();
                 sendFile(sock, path);
                 break;
             case 3:

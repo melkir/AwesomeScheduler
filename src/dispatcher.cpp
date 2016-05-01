@@ -1,6 +1,11 @@
 #include "util.h"
 #include "dispatcher.h"
 
+#define SOCK_CLOSED 0
+#define SOCK_MAX_CLIENT 5
+#define EXIT_SUCCESS 0
+#define EXIT_ERROR 1
+
 using namespace std;
 
 void Dispatcher::startServer(const string &hostname, const uint16_t port) {
@@ -8,7 +13,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
     /* Bind socket to the port */
     socket._bind();
     /* Start listening for clients on the socket */
-    socket._listen(5);
+    socket._listen(SOCK_MAX_CLIENT);
     cout << socket << "\n" << "Waiting for incoming connection..." << endl;
 
     int theConversation;
@@ -23,13 +28,13 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
         switch (fork()) {
             case -1:
                 perror("fork() failed");
-                exit(1);
+                exit(EXIT_ERROR);
             case 0:
                 /* This is the client process */
                 close(socket.getFileDescriptor());
                 doProcessing(theConversation);
                 cout << "Client has quit the server" << endl;
-                exit(0);
+                exit(EXIT_SUCCESS);
             default:
                 /* This is the parent process */
                 close(theConversation);
@@ -52,7 +57,7 @@ void Dispatcher::doProcessing(const int sock) {
 //    myAssert(write_count >= 0, "write()");
 
     /* Receive new tasks files until the socket close */
-    while (receiveFile(sock) != 0);
+    while (receiveFile(sock) != SOCK_CLOSED);
 }
 
 ssize_t Dispatcher::receiveFile(const int sock) {

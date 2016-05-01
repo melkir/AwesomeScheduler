@@ -60,7 +60,7 @@ string TaskProperties::save() {
 
     string task_path, task_id;
     task_id = generateID();
-    task_path = "/tmp/" + task_id + ".xml";
+    task_path = task_id + ".xml";
 
     // Write property tree to XML file
     pt::write_xml(task_path, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
