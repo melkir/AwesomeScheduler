@@ -1,5 +1,4 @@
 #include "task_properties.h"
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
 #include <boost/filesystem/path.hpp>
@@ -7,10 +6,10 @@
 
 namespace pt = boost::property_tree;
 
-TaskProperties::TaskProperties(const string &m_proc, int m_profile, const string &m_in, const string &m_out, int m_disk,
-                               int m_power, int m_cputime) :
-        m_proc(m_proc), m_profile(m_profile), m_in(m_in), m_out(m_out), m_disk(m_disk), m_power(m_power),
-        m_cputime(m_cputime) { }
+TaskProperties::TaskProperties(const string &proc, int profile, const string &in, const string &out, int disk,
+                               int power, int cputime) :
+        m_proc(proc), m_profile(profile), m_in(in), m_out(out), m_disk(disk), m_power(power),
+        m_cputime(cputime) { }
 
 void TaskProperties::init() {
     cout << "proc=";
@@ -27,7 +26,6 @@ void TaskProperties::init() {
     cin >> m_power;
     cout << "cputime=";
     cin >> m_cputime;
-    cout << "Task successfully created";
 }
 
 void TaskProperties::load(const string &filename) {
@@ -36,7 +34,6 @@ void TaskProperties::load(const string &filename) {
 
     // Parse the XML into the property tree.
     pt::read_xml(filename, tree);
-
     m_proc = tree.get<string>("task.proc");
     m_profile = tree.get<int>("task.profile");
     m_in = tree.get<string>("task.in");
@@ -47,7 +44,7 @@ void TaskProperties::load(const string &filename) {
 }
 
 string TaskProperties::save() {
-    // Create an empty property tree object.
+    // Create empty property tree object
     pt::ptree tree;
 
     // Put the simple values into the tree. The integer is automatically
@@ -67,38 +64,19 @@ string TaskProperties::save() {
     // Write property tree to XML file with indent
     pt::write_xml(tempstr, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
 
+    cout << "Task " << tempstr << " successfully created";
     return tempstr;
 }
 
-std::ostream &operator<<(std::ostream &os, const TaskProperties &t) {
-    return os << "proc\t= " << t.m_proc << '\n'
-           << "profile\t= " << t.m_profile << '\n'
-           << "in\t= " << t.m_in << '\n'
-           << "out\t= " << t.m_out << '\n'
-           << "disk\t= " << t.m_disk << '\n'
-           << "power\t= " << t.m_power << '\n'
-           << "cputime\t= " << t.m_cputime;
+std::ostream &operator<<(std::ostream &os, const TaskProperties &tp) {
+    return os << "proc\t= " << tp.m_proc << '\n'
+           << "profile\t= " << tp.m_profile << '\n'
+           << "in\t= " << tp.m_in << '\n'
+           << "out\t= " << tp.m_out << '\n'
+           << "disk\t= " << tp.m_disk << '\n'
+           << "power\t= " << tp.m_power << '\n'
+           << "cputime\t= " << tp.m_cputime;
 }
-
-/*
-int main() {
-    try {
-        TaskProperties t_prop;
-        string path;
-        cout << "Enter the path to the xml file : ";
-        cin >> path;
-        t_prop.load(path);
-        cout << t_prop << endl;
-        path = path.substr(0, path.size() - 4); // remove the xml extension
-        t_prop.save(path + "_copy.xml"); // and add _copy.xml at the end
-        cout << "Success" << endl;
-    }
-    catch (std::exception &e) {
-        cout << "Error: " << e.what() << endl;
-    }
-    return 0;
-}
-*/
 
 
 

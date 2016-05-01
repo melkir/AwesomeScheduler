@@ -19,8 +19,8 @@ private:
 public:
     TaskProperties() { }
 
-    TaskProperties(const string &m_proc, int m_profile, const string &m_in, const string &m_out, int m_disk,
-                   int m_power, int m_cputime);
+    TaskProperties(const string &proc, int profile, const string &in, const string &out, int disk,
+                   int power, int cputime);
 
     void init();
 
@@ -56,7 +56,7 @@ public:
 
     void setCpuTime(int cputime) { m_cputime = cputime; }
 
-    friend std::ostream &operator<<(std::ostream &os, const TaskProperties &t);
+    friend std::ostream &operator<<(std::ostream &os, const TaskProperties &tp);
 
 };
 

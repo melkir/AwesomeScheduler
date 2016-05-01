@@ -21,7 +21,7 @@ Socket::Socket(const std::string &hostname, const uint16_t port) {
     /* Enable the socket to reuse the address */
     const int enable = 1;
     rc = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
-    myAssert(rc >= 0, "sockfd()");
+    myAssert(rc >= 0, "setsockopt()");
 }
 
 void Socket::_connect() {
