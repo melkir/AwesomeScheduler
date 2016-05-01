@@ -28,6 +28,8 @@ public:
 
     string save();
 
+    string generateID();
+
     const string &getProcedureName() const { return m_proc; }
 
     void setProcedureName(const string &proc) { m_proc = proc; }

@@ -89,8 +89,10 @@ void EndUser::sendFile(const int sockfd, const string &filepath) {
         exit(1);
     }
     cout << "File sent successfully" << endl;
-    /* close descriptor for file that was sent */
+    /* close descriptor for file task that was sent */
     close(fd);
+    /* delete the file task since we don't need it anymore */
+    unlink(filepath.c_str());
 }
 
 

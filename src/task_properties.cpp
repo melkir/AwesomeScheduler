@@ -58,14 +58,15 @@ string TaskProperties::save() {
     tree.put("task.power", m_power);
     tree.put("task.cputime", m_cputime);
 
-    boost::filesystem::path temp = boost::filesystem::unique_path();
-    const std::string tempstr = temp.native();
+    string task_path, task_id;
+    task_id = generateID();
+    task_path = "/tmp/" + task_id + ".xml";
 
-    // Write property tree to XML file with indent
-    pt::write_xml(tempstr, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
+    // Write property tree to XML file
+    pt::write_xml(task_path, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
 
-    cout << "Task " << tempstr << " successfully created";
-    return tempstr;
+    cout << task_id << " successfully created" << endl;
+    return task_path;
 }
 
 std::ostream &operator<<(std::ostream &os, const TaskProperties &tp) {
@@ -77,6 +78,18 @@ std::ostream &operator<<(std::ostream &os, const TaskProperties &tp) {
            << "power\t= " << tp.m_power << '\n'
            << "cputime\t= " << tp.m_cputime;
 }
+
+string TaskProperties::generateID() {
+    // static duration via static keyword. This line is only executed once.
+    static int s_itemID = 1;
+    // makes copy of s_itemID, increments the real s_itemID, then returns the value in the copy
+    string task_number = to_string(s_itemID++);
+    // generate unique id for multi-threading
+    string unique_id = boost::filesystem::unique_path().native();
+    return "task" + task_number + "_" + unique_id;
+}
+
+
 
 
 
