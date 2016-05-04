@@ -19,6 +19,7 @@ set(TASKPROPERTIES_SOURCE_FILES
         header/task_properties.h)
 
 set(DISPTACHER_SOURCE_FILES
+        ${TASKPROPERTIES_SOURCE_FILES}
         ${SOCKET_SOURCE_FILES}
         src/dispatcher.cpp
         header/dispatcher.h)
@@ -30,6 +31,7 @@ set(ENDUSER_SOURCE_FILES
         header/end-user.h)
 
 add_executable(Dispatcher ${DISPTACHER_SOURCE_FILES})
+target_link_libraries(Dispatcher ${Boost_LIBRARIES})
 
 add_executable(EndUser ${ENDUSER_SOURCE_FILES})
 target_link_libraries(EndUser ${Boost_LIBRARIES})

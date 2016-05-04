@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <zconf.h>
 
-#define MAX_SIZE 1024
+#define MAX_SIZE 4096
 
 class Socket {
 public:

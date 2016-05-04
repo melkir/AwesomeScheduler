@@ -6,11 +6,6 @@
 
 namespace pt = boost::property_tree;
 
-TaskProperties::TaskProperties(const string &proc, int profile, const string &in, const string &out, int disk,
-                               int power, int cputime) :
-        m_proc(proc), m_profile(profile), m_in(in), m_out(out), m_disk(disk), m_power(power),
-        m_cputime(cputime) { }
-
 void TaskProperties::init() {
     cout << "proc=";
     cin >> m_proc;
@@ -28,7 +23,11 @@ void TaskProperties::init() {
     cin >> m_cputime;
 }
 
-void TaskProperties::load(const string &filename) {
+bool TaskProperties::load(string filename) {
+    if (!boost::filesystem::exists(filename)) {
+        cerr << "File " << filename << " doesn't exist !" << endl;
+        return false;
+    }
     // Create empty property tree object
     pt::ptree tree;
 
@@ -41,6 +40,23 @@ void TaskProperties::load(const string &filename) {
     m_disk = tree.get<int>("task.disk");
     m_power = tree.get<int>("task.power");
     m_cputime = tree.get<int>("task.cputime");
+    return true;
+}
+
+void TaskProperties::load_buffer(const string &buffer) {
+    cout << buffer << endl;
+    // write the task to a temporary file in order to load the task
+    string tmp_file = boost::filesystem::unique_path().native() + ".xml";
+    ofstream outf(tmp_file);
+    if (!outf) {
+        cerr << "Temp file " << tmp_file << " cannot can not be opened for writing." << endl;
+        exit(1);
+    }
+    outf << buffer;
+    outf.flush();
+    load(tmp_file);
+    // delete the tmp file after load
+    unlink(tmp_file.c_str());
 }
 
 string TaskProperties::save() {
@@ -60,23 +76,13 @@ string TaskProperties::save() {
 
     string task_path, task_id;
     task_id = generateID();
-    task_path = task_id + ".xml";
+    task_path = "tmp/" + task_id + ".xml";
 
     // Write property tree to XML file
     pt::write_xml(task_path, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
 
     cout << task_id << " successfully created" << endl;
     return task_path;
-}
-
-std::ostream &operator<<(std::ostream &os, const TaskProperties &tp) {
-    return os << "proc\t= " << tp.m_proc << '\n'
-           << "profile\t= " << tp.m_profile << '\n'
-           << "in\t= " << tp.m_in << '\n'
-           << "out\t= " << tp.m_out << '\n'
-           << "disk\t= " << tp.m_disk << '\n'
-           << "power\t= " << tp.m_power << '\n'
-           << "cputime\t= " << tp.m_cputime;
 }
 
 string TaskProperties::generateID() {
@@ -88,6 +94,32 @@ string TaskProperties::generateID() {
     string unique_id = boost::filesystem::unique_path().native();
     return "task" + task_number + "_" + unique_id;
 }
+
+void TaskProperties::print() const {
+    cout << "proc\t= " << m_proc << '\n'
+    << "profile\t= " << m_profile << '\n'
+    << "in\t= " << m_in << '\n'
+    << "out\t= " << m_out << '\n'
+    << "disk\t= " << m_disk << '\n'
+    << "power\t= " << m_power << '\n'
+    << "cputime\t= " << m_cputime << endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

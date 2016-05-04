@@ -17,18 +17,25 @@ private:
     int m_cputime;  // total cpu used
 
 public:
-    TaskProperties() { }
+    TaskProperties() = default;
 
     TaskProperties(const string &proc, int profile, const string &in, const string &out, int disk,
-                   int power, int cputime);
+                   int power, int cputime) : m_proc(proc), m_profile(profile), m_in(in), m_out(out), m_disk(disk),
+                                             m_power(power), m_cputime(cputime) { }
 
     void init();
 
-    void load(const string &filename);
+    void load_buffer(const string &buffer);
+
+    bool load(string filename);
 
     string save();
 
     string generateID();
+
+    const int getPriority() const {
+        return (m_disk + m_power + m_cputime) / 3;
+    }
 
     const string &getProcedureName() const { return m_proc; }
 
@@ -58,9 +65,11 @@ public:
 
     void setCpuTime(int cputime) { m_cputime = cputime; }
 
-    friend std::ostream &operator<<(std::ostream &os, const TaskProperties &tp);
+    void print() const;
 
+    bool operator<(const TaskProperties &rhs) const {
+        return this->getPriority() < rhs.getPriority();
+    }
 };
-
 
 #endif //AWESOMESCHEDULER_TASKPROPERTIES_H

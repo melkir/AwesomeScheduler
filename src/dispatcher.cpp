@@ -1,3 +1,4 @@
+#include <fstream>
 #include "util.h"
 #include "dispatcher.h"
 
@@ -33,7 +34,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
                 /* This is the client process */
                 close(socket.getFileDescriptor());
                 doProcessing(theConversation);
-                cout << "Client has quit the server" << endl;
+                cout << "Client " << ntohs(clientAddr.sin_port) << " has quit the server" << endl;
                 exit(EXIT_SUCCESS);
             default:
                 /* This is the parent process */
@@ -57,18 +58,26 @@ void Dispatcher::doProcessing(const int sock) {
 //    myAssert(write_count >= 0, "write()");
 
     /* Receive new tasks files until the socket close */
-    while (receiveFile(sock) != SOCK_CLOSED);
+    while (receiveTask(sock) != SOCK_CLOSED);
 }
 
-ssize_t Dispatcher::receiveFile(const int sock) {
+ssize_t Dispatcher::receiveTask(const int sock) {
     char buffer[MAX_SIZE];
     ssize_t size = read(sock, &buffer, MAX_SIZE);
     myAssert(size >= 0, "read()");
+
+    // if read return 0 it's mean that socket has been closed by the clients
+    if (0 == size) return SOCK_CLOSED;
     buffer[size] = '\0';
-    cout << buffer << endl;
+
+    TaskProperties tp;
+    const string &str(buffer);
+    // load the task from the buffer
+    tp.load_buffer(str);
+    // and add it to the task queue
+    m_taskQueue.push(tp);
     return size;
 }
-
 
 int main() {
     Dispatcher dispatcher;

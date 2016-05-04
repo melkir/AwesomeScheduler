@@ -5,6 +5,7 @@
 #include <task_properties.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <boost/filesystem.hpp>
 #include "end-user.h"
 
 using namespace std;
@@ -52,7 +53,7 @@ void EndUser::doProcessing(int sock) {
             case 1 :
                 cout << "Enter the path to the xml file :";
                 cin >> path;
-                tp.load(path);
+                if (!tp.load(path)) break;
                 sendFile(sock, path);
                 break;
             case 2:
@@ -92,7 +93,7 @@ void EndUser::sendFile(const int sockfd, const string &filepath) {
     /* close descriptor for file task that was sent */
     close(fd);
     /* delete the file task since we don't need it anymore */
-    unlink(filepath.c_str());
+//    unlink(filepath.c_str());
 }
 
 

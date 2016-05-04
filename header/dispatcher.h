@@ -2,16 +2,23 @@
 #define AWESOMESCHEDULER_DISPATCHER_H
 
 
+#include <queue>
 #include "socket.h"
+#include "task_properties.h"
+
+typedef TaskProperties task_t;
+
 
 class Dispatcher {
 public:
     void startServer(const std::string &hostname = "localhost", const uint16_t port = 5001);
 
-    ssize_t receiveFile(int sockfd);
+    ssize_t receiveTask(int sockfd);
 
 private:
     void doProcessing(int sock);
+
+    std::priority_queue<task_t, std::vector<task_t>, std::less<task_t>> m_taskQueue;
 };
 
 
