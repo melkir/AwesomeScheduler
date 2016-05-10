@@ -9,7 +9,9 @@ _____________________________________________________________________________
  - end-user.cpp : End-user sending work requests  
 
 **Front-end processing in dispacher**  
- - In progress  
+ - dispatcher.cpp > std::priority_queue : After receiving work request
+    the dispatcher add the work to the priority_queue and sort them by
+    priority
 
 **Software running in each worker (multi-thread monitoring)**  
  - Planified  
