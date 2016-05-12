@@ -60,12 +60,15 @@ Second Tab:
 $ ./EndUser
 ```
 
+Third Tab:
+```sh
+$ ./Worker
+```
+
 ### Todo
- - Frond-end processing in dispatcher
  - Software running in each worker (multi-process monitoring)
  - Software running in each worker (multi-thread monitoring)
  - Add the possibility to move a job from one machine to another
- - Complete this readme
 
 License
 ----
