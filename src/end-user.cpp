@@ -20,23 +20,7 @@ void EndUser::startClient(const string &hostname, const uint16_t port) {
 }
 
 void EndUser::doProcessing(int sock) {
-//    /* Ask for a message from the user, this message will be read by the server */
-//    char buffer[256];
-//    printf("Please enter the message: ");
-//    bzero(buffer, 256);
-//    fgets(buffer, 255, stdin);
-//
-//    /* Send the message to the server */
-//    ssize_t write_count = write(sock, buffer, strlen(buffer));
-//    myAssert(write_count >= 0, "write()");
-//
-//    /* Read the server response */
-//    bzero(buffer, 256);
-//    ssize_t read_count = read(sock, buffer, 255);
-//    myAssert(read_count >= 0, "read()");
-//
-//    /* And print it in the console */
-//    printf("%s\n", buffer);
+
 
     int option;
     TaskProperties tp;

@@ -30,8 +30,17 @@ set(ENDUSER_SOURCE_FILES
         src/end-user.cpp
         header/end-user.h)
 
+set(WORKER_SOURCE_FILES
+        ${TASKPROPERTIES_SOURCE_FILES}
+        ${SOCKET_SOURCE_FILES}
+        src/worker.cpp
+        header/worker.h)
+
 add_executable(Dispatcher ${DISPTACHER_SOURCE_FILES})
 target_link_libraries(Dispatcher ${Boost_LIBRARIES})
 
 add_executable(EndUser ${ENDUSER_SOURCE_FILES})
 target_link_libraries(EndUser ${Boost_LIBRARIES})
+
+add_executable(Worker ${WORKER_SOURCE_FILES})
+target_link_libraries(Worker ${Boost_LIBRARIES})

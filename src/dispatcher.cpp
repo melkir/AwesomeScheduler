@@ -1,4 +1,6 @@
 #include <fstream>
+#include <memory.h>
+#include <wait.h>
 #include "util.h"
 #include "dispatcher.h"
 
@@ -26,7 +28,8 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
         cout << "A new client has joined the server : "
         << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
         /* Create child process */
-        switch (fork()) {
+        pid_t pid;
+        switch (pid = fork()) {
             case -1:
                 perror("fork() failed");
                 exit(EXIT_ERROR);
@@ -39,24 +42,13 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
             default:
                 /* This is the parent process */
                 close(theConversation);
+                waitpid(pid, NULL, 0);
+                startClient("localhost", 6000);
         }
     } /* end of while */
 }
 
 void Dispatcher::doProcessing(const int sock) {
-//    char buffer[256];
-//    ssize_t read_count, write_count;
-//    /* Read the client message */
-//    read_count = read(sock, buffer, 255);
-//    myAssert(read_count >= 0, "read()");
-//
-//    /* And print it in the console */
-//    printf("Server receive : %s\n", buffer);
-//
-//    /* Send him an ACK */
-//    write_count = write(sock, "Server : I got your message", 27);
-//    myAssert(write_count >= 0, "write()");
-
     /* Receive new tasks files until the socket close */
     while (receiveTask(sock) != SOCK_CLOSED);
 }
@@ -72,11 +64,42 @@ ssize_t Dispatcher::receiveTask(const int sock) {
 
     TaskProperties tp;
     const string &str(buffer);
+
     // load the task from the buffer
     tp.load_buffer(str);
+
     // and add it to the task queue
     m_taskQueue.push(tp);
     return size;
+}
+
+void Dispatcher::startClient(const string &hostname, const uint16_t port) {
+    Socket socket(hostname, port);
+    /* Connect to the server */
+    socket._connect();
+    cout << "Connection established with the server : " << socket << endl;
+    /* Start processing on this socket */
+    doProcessingWorker(socket.getFileDescriptor());
+}
+
+void Dispatcher::doProcessingWorker(int sock) {
+    /* Ask for a message from the user, this message will be read by the server */
+    char buffer[256];
+    printf("Please enter the message: ");
+    bzero(buffer, 256);
+    fgets(buffer, 255, stdin);
+
+    /* Send the message to the server */
+    ssize_t write_count = write(sock, buffer, strlen(buffer));
+    myAssert(write_count >= 0, "write()");
+
+    /* Read the server response */
+    bzero(buffer, 256);
+    ssize_t read_count = read(sock, buffer, 255);
+    myAssert(read_count >= 0, "read()");
+
+    /* And print it in the console */
+    printf("%s\n", buffer);
 }
 
 int main() {

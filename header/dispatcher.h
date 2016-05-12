@@ -15,8 +15,12 @@ public:
 
     ssize_t receiveTask(int sockfd);
 
+    void startClient(const string &hostname, const uint16_t port);
+
 private:
     void doProcessing(int sock);
+
+    void doProcessingWorker(int sock);
 
     std::priority_queue<task_t, std::vector<task_t>, std::less<task_t>> m_taskQueue;
 };
