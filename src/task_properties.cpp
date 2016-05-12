@@ -54,7 +54,6 @@ void TaskProperties::load_buffer(const string &buffer) {
     }
     outf << buffer;
     outf.flush();
-    cout << "load()" << endl;
     load(tmp_file);
     // delete the tmp file after load
     unlink(tmp_file.c_str());
@@ -78,7 +77,6 @@ string TaskProperties::save() {
     string task_path, task_id;
     task_id = generateID();
     task_path = task_id + ".xml";
-    cout << "save()" << endl;
     // Write property tree to XML file
     pt::write_xml(task_path, tree, std::locale(), pt::xml_writer_make_settings<string>(' ', 4));
 

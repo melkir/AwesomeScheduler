@@ -20,8 +20,6 @@ void EndUser::startClient(const string &hostname, const uint16_t port) {
 }
 
 void EndUser::doProcessing(int sock) {
-
-
     int option;
     TaskProperties tp;
     string path;

@@ -17,6 +17,8 @@ public:
 
     void startClient(const string &hostname, const uint16_t port);
 
+    void sendFile(const int sockfd, const string &filepath);
+
 private:
     void doProcessing(int sock);
 

@@ -3,6 +3,7 @@
 #include <zconf.h>
 #include <util.h>
 #include <socket.h>
+#include <task_properties.h>
 
 #define SOCK_CLOSED 0
 #define SOCK_MAX_CLIENT 5
@@ -26,29 +27,41 @@ void Worker::startServer(const std::string &hostname, const uint16_t port) {
     cout << "A new client has joined the server : "
     << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
 
-    close(socket.getFileDescriptor());
+//    close(socket.getFileDescriptor());
     receiveTask(theConversation);
 }
 
 
-long Worker::receiveTask(int sockfd) {
-//    char buffer[256];
-//    ssize_t read_count, write_count;
-//    /* Read the client message */
-//    read_count = read(sockfd, buffer, 255);
-//    myAssert(read_count >= 0, "read()");
+long Worker::receiveTask(int sock) {
+    char buffer[256];
+    ssize_t read_count;
+    /* Read the client message */
+    read_count = read(sock, buffer, 255);
+    myAssert(read_count >= 0, "read()");
 //
 //    /* And print it in the console */
-//    printf("Server receive : %s\n", buffer);
+//    printf("Worker receive : %s\n", buffer);
 //
 //    /* Send him an ACK */
-//    write_count = write(sockfd, "Server : I got your message", 27);
+//    write_count = write(sock, "Server : I got your message", 27);
 //    myAssert(write_count >= 0, "write()");
+    buffer[read_count] = '\0';
+
+    TaskProperties tp;
+    const string &str(buffer);
+    tp.load_buffer(str);
+    cout << "J'ai recu la tâche " << tp.getProcedureName()
+    << " je travaille dessus..." << endl;
+    sleep(10);
+    cout << "J'ai fini" << endl;
     return 0;
 }
 
 int main() {
     Worker worker;
+    cout << "-----------------------\n"
+    << "  Worker as a Server\n"
+    << "-----------------------" << endl;
     worker.startServer("localhost", 6000);
 
     return 0;

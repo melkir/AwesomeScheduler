@@ -1,6 +1,8 @@
 #include <fstream>
 #include <memory.h>
 #include <wait.h>
+#include <tkPort.h>
+#include <sys/sendfile.h>
 #include "util.h"
 #include "dispatcher.h"
 
@@ -28,8 +30,7 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
         cout << "A new client has joined the server : "
         << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << endl;
         /* Create child process */
-        pid_t pid;
-        switch (pid = fork()) {
+        switch (fork()) {
             case -1:
                 perror("fork() failed");
                 exit(EXIT_ERROR);
@@ -38,12 +39,11 @@ void Dispatcher::startServer(const string &hostname, const uint16_t port) {
                 close(socket.getFileDescriptor());
                 doProcessing(theConversation);
                 cout << "Client " << ntohs(clientAddr.sin_port) << " has quit the server" << endl;
+                startClient("localhost", 6000);
                 exit(EXIT_SUCCESS);
             default:
                 /* This is the parent process */
                 close(theConversation);
-                waitpid(pid, NULL, 0);
-                startClient("localhost", 6000);
         }
     } /* end of while */
 }
@@ -74,32 +74,65 @@ ssize_t Dispatcher::receiveTask(const int sock) {
 }
 
 void Dispatcher::startClient(const string &hostname, const uint16_t port) {
+    cout << "-----------------------\n"
+    << "Dispatcher as a Client\n"
+    << "-----------------------" << endl;
     Socket socket(hostname, port);
     /* Connect to the server */
     socket._connect();
-    cout << "Connection established with the server : " << socket << endl;
+    cout << "Connection established with the worker : " << socket << endl;
     /* Start processing on this socket */
     doProcessingWorker(socket.getFileDescriptor());
 }
 
+void Dispatcher::sendFile(const int sockfd, const string &filepath) {
+    int fd;                     /* file descriptor for file to send */
+    struct stat stat_buf;       /* argument to fstat */
+    off_t offset = 0;           /* file offset */
+    /* open the file in read-only mode */
+    fd = open(filepath.c_str(), O_RDONLY);
+    myAssert(-1 != fd, "open()");
+    /* get the size of the file to be sent */
+    fstat(fd, &stat_buf);
+    /* copy file using sendfile */
+    cout << "Sending the task to the server..." << endl;
+    ssize_t rc = sendfile(sockfd, fd, &offset, (size_t) stat_buf.st_size);
+    myAssert(-1 != rc, "sendfile()");
+    if (rc != stat_buf.st_size) {
+        fprintf(stderr, "incomplete transfer from sendfile: %li of %li bytes\n", rc, stat_buf.st_size);
+        exit(1);
+    }
+    cout << "File sent successfully" << endl;
+    /* close descriptor for file task that was sent */
+    close(fd);
+    /* delete the file task since we don't need it anymore */
+    unlink(filepath.c_str());
+}
+
 void Dispatcher::doProcessingWorker(int sock) {
-    /* Ask for a message from the user, this message will be read by the server */
-    char buffer[256];
-    printf("Please enter the message: ");
-    bzero(buffer, 256);
-    fgets(buffer, 255, stdin);
+//    /* Ask for a message from the user, this message will be read by the server */
+//    char buffer[256];
+//    printf("Please enter the message: ");
+//    bzero(buffer, 256);
+//    fgets(buffer, 255, stdin);
+//
+//    /* Send the message to the server */
+//    ssize_t write_count = write(sock, buffer, strlen(buffer));
+//    myAssert(write_count >= 0, "write()");
+//
+//    /* Read the server response */
+//    bzero(buffer, 256);
+//    ssize_t read_count = read(sock, buffer, 255);
+//    myAssert(read_count >= 0, "read()");
+//
+//    /* And print it in the console */
+//    printf("%s\n", buffer);
 
-    /* Send the message to the server */
-    ssize_t write_count = write(sock, buffer, strlen(buffer));
-    myAssert(write_count >= 0, "write()");
-
-    /* Read the server response */
-    bzero(buffer, 256);
-    ssize_t read_count = read(sock, buffer, 255);
-    myAssert(read_count >= 0, "read()");
-
-    /* And print it in the console */
-    printf("%s\n", buffer);
+    // envoi de la tache sur le worker
+    TaskProperties tp = m_taskQueue.top();
+    string path = tp.save();
+    sendFile(sock, path);
+    m_taskQueue.pop();
 }
 
 int main() {
