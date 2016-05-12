@@ -35,23 +35,25 @@ void Worker::startServer(const std::string &hostname, const uint16_t port) {
 long Worker::receiveTask(int sock) {
     char buffer[MAX_SIZE];
     ssize_t size;
+
     /* Read the client message */
-    size = read(sock, &buffer, MAX_SIZE);
-    myAssert(size >= 0, "read()");
-    buffer[size] = '\0';
+    while ((size = read(sock, &buffer, MAX_SIZE)) != 0) {
+        myAssert(size >= 0, "read()");
+        buffer[size] = '\0';
 
-    TaskProperties tp;
-    const string &str(buffer);
-    tp.load_buffer(str);
-    cout << "J'ai recu la tâche " << tp.getProcedureName()
-    << "\nDébut du travail..." << endl;
-    sleep(8);
-    cout << "Travail terminé" << endl;
+        TaskProperties tp;
+        const string &str(buffer);
+        tp.load_buffer(str);
+        cout << "J'ai recu la tâche " << tp.getProcedureName()
+        << "\nDébut du travail..." << endl;
+        sleep(8);
+        cout << "Travail terminé\n" << endl;
 
-    string ack = "Worker : Travail fini";
-    /* Send him an ACK */
-    size = write(sock, "Worker : Travail fini", ack.size());
-    myAssert(size >= 0, "write()");
+        string ack = "Worker : Travail fini";
+        /* Send him an ACK */
+        size = write(sock, "Worker : Travail fini", ack.size());
+        myAssert(size >= 0, "write()");
+    }
     return 0;
 }
 
