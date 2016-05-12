@@ -1,6 +1,5 @@
 #include <fstream>
 #include <memory.h>
-#include <wait.h>
 #include <tkPort.h>
 #include <sys/sendfile.h>
 #include "util.h"
@@ -10,6 +9,7 @@
 #define SOCK_MAX_CLIENT 5
 #define EXIT_SUCCESS 0
 #define EXIT_ERROR 1
+#define NB_WORKER 4
 
 using namespace std;
 
@@ -133,6 +133,14 @@ void Dispatcher::doProcessingWorker(int sock) {
     string path = tp.save();
     sendFile(sock, path);
     m_taskQueue.pop();
+
+    char buffer[256];
+    /* Read the server response */
+    bzero(buffer, 256);
+    ssize_t read_count = read(sock, buffer, 255);
+    myAssert(read_count >= 0, "read()");
+    buffer[256] = '\0';
+    printf("%s\n", buffer);
 }
 
 int main() {
