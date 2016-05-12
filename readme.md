@@ -14,6 +14,7 @@ _____________________________________________________________________________
  - dispatcher.cpp > std::priority_queue : After receiving work request
     the dispatcher add the work to the priority_queue and sort them by
     priority
+ - worker.cpp : Receive the work from the dispatcher
 
 **Software running in each worker (multi-thread monitoring)**  
  - Planified  
