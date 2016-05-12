@@ -40,7 +40,7 @@ void EndUser::doProcessing(int sock) {
                 break;
             case 2:
                 cout << "Create the properties file :" << endl;
-                tp.init();
+                cin >> tp;
                 path = tp.save();
                 sendFile(sock, path);
                 break;

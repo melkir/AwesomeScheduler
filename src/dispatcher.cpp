@@ -9,7 +9,6 @@
 #define SOCK_MAX_CLIENT 5
 #define EXIT_SUCCESS 0
 #define EXIT_ERROR 1
-#define NB_WORKER 4
 
 using namespace std;
 
@@ -67,6 +66,9 @@ ssize_t Dispatcher::receiveTask(const int sock) {
 
     // load the task from the buffer
     tp.load_buffer(str);
+
+    // print the content
+    cout << "Contenu de la tache\n" << tp << "\n\n";
 
     // and add it to the task queue
     m_taskQueue.push(tp);

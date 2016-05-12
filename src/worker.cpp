@@ -37,6 +37,7 @@ long Worker::receiveTask(int sock) {
     ssize_t size;
 
     /* Read the client message */
+    int i = 0;
     while ((size = read(sock, &buffer, MAX_SIZE)) != 0) {
         myAssert(size >= 0, "read()");
         buffer[size] = '\0';
@@ -44,14 +45,17 @@ long Worker::receiveTask(int sock) {
         TaskProperties tp;
         const string &str(buffer);
         tp.load_buffer(str);
-        cout << "J'ai recu la tâche " << tp.getProcedureName()
-        << "\nDébut du travail..." << endl;
-        sleep(8);
-        cout << "Travail terminé\n" << endl;
 
-        string ack = "Worker : Travail fini";
+        cout << "--- Traitement de la tâche n°" << ++i << "---\n" << tp << "\nDébut du travail...";
+        for (int j = 0; j < 8; ++j) {
+            sleep(1);
+            cout << "." << flush;
+        }
+        cout << "travail terminé\n" << endl;
+
+        string ack = "--- Worker : Travail fini";
         /* Send him an ACK */
-        size = write(sock, "Worker : Travail fini", ack.size());
+        size = write(sock, ack.c_str(), ack.size());
         myAssert(size >= 0, "write()");
     }
     return 0;

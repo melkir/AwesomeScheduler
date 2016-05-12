@@ -7,6 +7,9 @@
 using namespace std;
 
 class TaskProperties {
+    friend std::ostream &operator<<(std::ostream &out, const TaskProperties &task);
+    friend std::istream &operator>>(std::istream &in, TaskProperties &task);
+
 private:
     string m_proc;  // procedure name
     int m_profile;  // 1 = maths, 2 = disk, 3 = transactional
@@ -22,8 +25,6 @@ public:
     TaskProperties(const string &proc, int profile, const string &in, const string &out, int disk,
                    int power, int cputime) : m_proc(proc), m_profile(profile), m_in(in), m_out(out), m_disk(disk),
                                              m_power(power), m_cputime(cputime) { }
-
-    void init();
 
     void load_buffer(const string &buffer);
 
@@ -64,8 +65,6 @@ public:
     int getCpuTime() const { return m_cputime; }
 
     void setCpuTime(int cputime) { m_cputime = cputime; }
-
-    void print() const;
 
     bool operator<(const TaskProperties &rhs) const {
         return this->getPriority() < rhs.getPriority();

@@ -3,25 +3,9 @@
 #include <boost/foreach.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
+#include <stdlib.h>
 
 namespace pt = boost::property_tree;
-
-void TaskProperties::init() {
-    cout << "proc=";
-    cin >> m_proc;
-    cout << "profile=";
-    cin >> m_profile;
-    cout << "in=";
-    cin >> m_in;
-    cout << "out=";
-    cin >> m_out;
-    cout << "disk=";
-    cin >> m_disk;
-    cout << "power=";
-    cin >> m_power;
-    cout << "cputime=";
-    cin >> m_cputime;
-}
 
 bool TaskProperties::load(string filename) {
     if (!boost::filesystem::exists(filename)) {
@@ -44,7 +28,6 @@ bool TaskProperties::load(string filename) {
 }
 
 void TaskProperties::load_buffer(const string &buffer) {
-    cout << buffer << endl;
     // write the task to a temporary file in order to load the task
     string tmp_file = boost::filesystem::unique_path().native() + ".xml";
     ofstream outf(tmp_file);
@@ -94,33 +77,31 @@ string TaskProperties::generateID() {
     return "task" + task_number + "_" + unique_id;
 }
 
-void TaskProperties::print() const {
-    cout << "proc\t= " << m_proc << '\n'
-    << "profile\t= " << m_profile << '\n'
-    << "in\t= " << m_in << '\n'
-    << "out\t= " << m_out << '\n'
-    << "disk\t= " << m_disk << '\n'
-    << "power\t= " << m_power << '\n'
-    << "cputime\t= " << m_cputime << endl;
+std::ostream &operator<<(std::ostream &os, const TaskProperties &task) {
+    return os << "proc=" << task.m_proc << '\n'
+           << "profile=" << task.m_profile << '\n'
+           << "in=" << task.m_in << '\n'
+           << "out=" << task.m_out << '\n'
+           << "disk=" << task.m_disk << '\n'
+           << "power=" << task.m_power << '\n'
+           << "cputime=" << task.m_cputime;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+std::istream &operator>>(std::istream &is, TaskProperties &task) {
+    cout << "proc=";
+    is >> task.m_proc;
+    cout << "profile=";
+    is >> task.m_profile;
+    cout << "in=";
+    is >> task.m_in;
+    cout << "out=";
+    is >> task.m_out;
+    cout << "disk=";
+    is >> task.m_disk;
+    cout << "power=";
+    is >> task.m_power;
+    cout << "cputime=";
+    is >> task.m_cputime;
+    return is;
+}
 
