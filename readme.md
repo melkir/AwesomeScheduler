@@ -44,7 +44,7 @@ AwesomeScheduler uses a number of open source projects to work properly:
 You need GCC, Boost and CMake installed :  
 
 ```sh
-$ git clone http://gitlab.etude.eisti.fr/TeamAwesome/AwesomeScheduler.git
+$ git clone https://github.com/melkir/AwesomeScheduler.git
 $ cd AwesomeScheduler
 $ source build.sh
 ```
