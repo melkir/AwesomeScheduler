@@ -1,6 +1,7 @@
 # AwesomeScheduler
 
 AwesomeScheduler is a high-level scheduler powered by C++11 and Boost.
+/!\ This program is incomplete and was used for learning purposes only /!\
 
 **Encadrant** : Bernard Glonneau [bg]  
 **Développeurs** : Thibault Vieux [melkir] - Robin Lasnier [lasnierrob] - François Massot [massotfran]  
